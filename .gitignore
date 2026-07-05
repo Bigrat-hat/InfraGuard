@@ -1,0 +1,24 @@
+# Python
+infrastruard/backend/venv/
+infraguard/backend/venv/
+infraguard/backend/__pycache__/
+infraguard/backend/routes/__pycache__/
+infraguard/backend/models/__pycache__/
+infraguard/backend/services/__pycache__/
+infraguard/backend/*.db
+infraguard/backend/server.log
+*.pyc
+*.pyo
+.env
+backend.log
+
+# Node
+infraguard/frontend/node_modules/
+infraguard/frontend/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Other projects in this folder
+HeartSync/
