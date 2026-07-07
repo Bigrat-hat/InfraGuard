@@ -1,20 +1,19 @@
 # Python
-infrastruard/backend/venv/
-infraguard/backend/venv/
-infraguard/backend/__pycache__/
-infraguard/backend/routes/__pycache__/
-infraguard/backend/models/__pycache__/
-infraguard/backend/services/__pycache__/
-infraguard/backend/*.db
-infraguard/backend/server.log
+backend/venv/
+backend/__pycache__/
+backend/routes/__pycache__/
+backend/models/__pycache__/
+backend/services/__pycache__/
+backend/*.db
+backend/server.log
 *.pyc
 *.pyo
 .env
 backend.log
 
 # Node
-infraguard/frontend/node_modules/
-infraguard/frontend/build/
+frontend/node_modules/
+frontend/build/
 
 # OS
 .DS_Store
@@ -22,3 +21,4 @@ Thumbs.db
 
 # Other projects in this folder
 HeartSync/
+

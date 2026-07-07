@@ -79,7 +79,7 @@
 ### Backend
 
 ```bash
-cd infraguard/backend
+cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -95,7 +95,7 @@ chmod +x start_backend.sh
 ### Frontend
 
 ```bash
-cd infraguard/frontend
+cd frontend
 npm install
 npm start
 ```

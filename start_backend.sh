@@ -2,7 +2,7 @@
 # InfraGuard Backend Start Script
 # NOTE: iptables and smartctl require sudo/root privileges
 
-cd "$(dirname "$0")/infraguard/backend"
+cd "$(dirname "$0")/backend"
 
 if [ ! -d "venv" ]; then
   echo "Creating virtual environment..."

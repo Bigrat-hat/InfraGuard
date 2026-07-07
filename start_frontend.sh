@@ -1,7 +1,7 @@
 #!/bin/bash
 # InfraGuard Frontend Start Script
 
-cd "$(dirname "$0")/infraguard/frontend"
+cd "$(dirname "$0")/frontend"
 
 if [ ! -d "node_modules" ]; then
   echo "Installing dependencies..."
