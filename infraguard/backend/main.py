@@ -12,7 +12,7 @@ from routes.auth import router as auth_router
 from routes.network import router as network_router
 from routes.servers import router as servers_router
 from routes.health import router as health_router
-from services.network_service import get_active_connections, get_bandwidth_per_process
+from services.network_service import get_active_connections, get_bandwidth_per_process, get_system_bandwidth
 from services.ssh_service import get_server_metrics, exec_command
 from auth import SECRET_KEY, ALGORITHM
 
@@ -41,8 +41,11 @@ app.include_router(health_router)
 
 def _verify_ws_token(token: str) -> dict | None:
     try:
-        return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    except JWTError:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        print("VERIFY WS TOKEN SUCCESS:", payload)
+        return payload
+    except Exception as e:
+        print("VERIFY WS TOKEN FAILED:", e)
         return None
 
 
@@ -56,10 +59,11 @@ async def ws_network(websocket: WebSocket, token: str = Query(...)):
         while True:
             data = {
                 "connections": get_active_connections(),
-                "bandwidth": get_bandwidth_per_process()
+                "bandwidth": get_bandwidth_per_process(),
+                "bandwidth_stats": get_system_bandwidth()
             }
             await websocket.send_text(json.dumps(data))
-            await asyncio.sleep(5)
+            await asyncio.sleep(2)
     except WebSocketDisconnect:
         pass
 

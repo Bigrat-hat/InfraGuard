@@ -12,6 +12,6 @@ fi
 source venv/bin/activate
 pip install -r requirements.txt -q
 
-echo "Starting InfraGuard backend on http://localhost:8000"
-echo "API docs available at http://localhost:8000/docs"
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+echo "Starting InfraGuard backend on http://localhost:8080"
+echo "API docs available at http://localhost:8080/docs"
+uvicorn main:app --host 0.0.0.0 --port 8080 --reload

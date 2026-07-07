@@ -3,6 +3,7 @@ import subprocess
 import socket
 import time
 import re
+import ipaddress
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -45,7 +46,44 @@ def _track_connection(ip: str):
     _connection_history[ip] = [t for t in _connection_history[ip] if now - t < SUSPICIOUS_WINDOW]
 
 
+def _is_local_or_private_ip(ip: str) -> bool:
+    if not ip:
+        return False
+    ip = ip.strip()
+    if ip.lower() == "localhost":
+        return True
+    
+    # IPv4 checks
+    if re.match(r"^127\.", ip) or re.match(r"^192\.168\.", ip) or re.match(r"^10\.", ip):
+        return True
+    m = re.match(r"^172\.(\d+)\.", ip)
+    if m:
+        second_octet = int(m.group(1))
+        if 16 <= second_octet <= 31:
+            return True
+            
+    # IPv6 checks
+    if ip == "::1" or ip == "0:0:0:0:0:0:0:1":
+        return True
+        
+    try:
+        ip_obj = ipaddress.ip_address(ip)
+        if ip_obj.version == 6:
+            # check unique local fc00::/7
+            network = ipaddress.ip_network("fc00::/7")
+            if ip_obj in network:
+                return True
+            if ip_obj.is_loopback:
+                return True
+    except Exception:
+        pass
+        
+    return False
+
+
 def _is_suspicious(ip: str) -> bool:
+    if _is_local_or_private_ip(ip):
+        return False
     return len(_connection_history.get(ip, [])) >= SUSPICIOUS_THRESHOLD
 
 
@@ -62,6 +100,40 @@ def get_bandwidth_per_process() -> list[dict]:
         return procs[:20]
     except Exception:
         return []
+
+
+_last_io = None
+_last_io_time = None
+
+def get_system_bandwidth() -> dict:
+    global _last_io, _last_io_time
+    try:
+        io = psutil.net_io_counters()
+        now = time.time()
+        
+        if _last_io is None or _last_io_time is None:
+            _last_io = io
+            _last_io_time = now
+            return {"upload": 0.0, "download": 0.0}
+            
+        elapsed = now - _last_io_time
+        if elapsed <= 0:
+            return {"upload": 0.0, "download": 0.0}
+            
+        # Calculate bytes per second
+        upload_bps = (io.bytes_sent - _last_io.bytes_sent) / elapsed
+        download_bps = (io.bytes_recv - _last_io.bytes_recv) / elapsed
+        
+        _last_io = io
+        _last_io_time = now
+        
+        # Convert to KB/s for human readable charts
+        return {
+            "upload": round(upload_bps / 1024.0, 2),
+            "download": round(download_bps / 1024.0, 2)
+        }
+    except Exception:
+        return {"upload": 0.0, "download": 0.0}
 
 
 def block_ip(ip: str) -> tuple[bool, str]:

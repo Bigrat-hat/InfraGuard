@@ -33,6 +33,7 @@
 - **Block IP** — runs `iptables -A INPUT -s <ip> -j DROP` (admin only)
 - **Unblock IP** — removes iptables rule (admin only)
 - **Kill Connection** — terminates the process by PID (admin only)
+- **Internet Speed Test** — measures real latency, download, and upload speeds against Cloudflare's edge network
 - Network action log history
 
 ### 🖥️ Servers Tab
@@ -205,6 +206,7 @@ infraguard/
 │   ├── services/
 │   │   ├── ssh_service.py       # Paramiko SSH/SFTP pool
 │   │   ├── network_service.py   # psutil + iptables + subprocess
+│   │   ├── speedtest.py         # Latency, download, upload measurements
 │   │   ├── report_service.py    # ReportLab PDF generation
 │   │   └── audit.py             # Audit logging + email alerts
 │   ├── requirements.txt

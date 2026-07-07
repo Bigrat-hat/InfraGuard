@@ -155,3 +155,9 @@ async def tool_portscan(req: PortScanRequest, current_user: User = Depends(get_c
 async def tool_discover(req: DiscoverRequest, current_user: User = Depends(get_current_user)):
     hosts = discover_hosts(req.subnet)
     return {"subnet": req.subnet, "hosts": hosts, "total": len(hosts)}
+
+
+@router.post("/tools/speedtest")
+async def tool_speedtest(current_user: User = Depends(get_current_user)):
+    from services.speedtest import run_speedtest
+    return await run_speedtest()
